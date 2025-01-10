@@ -8,7 +8,7 @@
 
 <p align="center">
  <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 1.86-white?style=for-the-badge&logo=42&labelColor=000000&Color=FFFFFF&logoWidth=20" />
+    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 2.26-white?style=for-the-badge&logo=42&labelColor=000000&Color=FFFFFF&logoWidth=20" />
  </a>
 </p>
 
