@@ -14,7 +14,6 @@
 
 - I am actually learning Computer Science at 42Madrid :sparkles:
 - Upcoming blockchain developer :computer:                                          
-- I'm a Junior Store Manager, working at [Bluespace](https://bluespace.es) 🚀
 - How to reach me: yepes.tech@gmail.com 📫 
 
 ## Technologies used
