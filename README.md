@@ -13,7 +13,7 @@
 </p>
 
 - I am actually learning Computer Science at 42Madrid :sparkles:
-- Upcoming blockchain developer :computer:                                          
+- Upcoming developer :computer:                                          
 - How to reach me: yepes.tech@gmail.com 📫 
 
 ## Technologies used
