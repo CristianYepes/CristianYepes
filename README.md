@@ -1,8 +1,8 @@
 # Hello 👋! Welcome to Cristian's GitHub
 
-![Cyberpunk City Banner](./img/BANNER.png)
-
-
+<div align="center">
+  <img src="./img/BANNER.png" alt="Cyberpunk City Banner" width="600">
+</div>
 
 ## 👨‍💻 About Me
 
@@ -12,20 +12,18 @@
 
 <p align="center">
   <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-FFFFFF?style=for-the-badge&logo=42&labelColor=CCCCCC&Color=000000&logoWidth=25" />
+    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
   </a>
   <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-FFFFFF?style=for-the-badge&logo=42&labelColor=CCCCCC&Color=000000&logoWidth=25" />
+    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
   </a>
   <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-FFFFFF?style=for-the-badge&logo=42&labelColor=CCCCCC&Color=000000&logoWidth=25" />
+    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
   </a>
   <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-FFFFFF?style=for-the-badge&logo=42&labelColor=CCCCCC&Color=000000&logoWidth=25" />
+    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
   </a>
 </p>
-
-
 
 ## 🎯 Current Learning Path
 
@@ -37,11 +35,16 @@
 - MLOps & AI Model Deployment
 - Collaborative AI Project Development
 
----
+
+
+## 📊 Most Used Languages
+
+![Most Used Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=CristianYepes&layout=compact&theme=tokyonight&langs_count=10&size_weight=0.5&count_weight=0.5&hide_border=true&cache_seconds=1800)
+
 
 ## 🛠️ Technologies used
 
-<p align="center">
+<p align="left">
   <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" />
   <img src="https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white" />
   <img src="https://img.shields.io/badge/python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white" />
@@ -55,11 +58,9 @@
 </p>
 
 
----
-
 ## 💻 OS used
 
-<p align="center">
+<p align="left">
   <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" />
   <img src="https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white" />
   <img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" />
