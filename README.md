@@ -20,9 +20,6 @@
   <a href="https://profile.intra.42.fr/users/cyepes">
     <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
   </a>
-  <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
-  </a>
 </p>
 
 ## 🎯 Current Learning Path
