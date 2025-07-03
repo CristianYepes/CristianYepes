@@ -4,35 +4,20 @@
   <img src="./img/BANNER.png" alt="Cyberpunk City Banner" width="600">
 </div>
 
-## 👨‍💻 About Me
+## About Me
 
-- Currently studying **Computer Science** at [42 Madrid](https://42madrid.com/)
-- Aspiring **Software & AI Developer**
-- 📫 **Contact:** yepes.tech@gmail.com
-
-<p align="center">
-  <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
-  </a>
-  <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
-  </a>
-  <a href="https://profile.intra.42.fr/users/cyepes">
-    <img alt="42intra" src="https://img.shields.io/badge/cursus-lvl 3.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" />
-  </a>
-</p>
-
-## 🎯 Current Learning Path
-
-**AI Developer Bootcamp** at [Factoría F5](https://factoriaf5.org/), focused on:
-
-- Machine Learning & Deep Learning
-- Python for AI Development
-- Data Science & Analytics
-- MLOps & AI Model Deployment
-- Collaborative AI Project Development
+Software & AI Developer with hands-on experience in intelligent systems, scalable architectures, and automation.
+Currently enhancing advanced AI capabilities through intensive projects at 42 Madrid and specialized AI engineering at Factoría F5.
+📫 Contact: yepes.tech@gmail.com
+<p align="center"> <a href="https://profile.intra.42.fr/users/cyepes"> <img alt="42intra" src="https://img.shields.io/badge/42%20Profile-lvl%203.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" /> </a> </p>
 
 
+## Focus Areas
+
+Building & deploying AI models: Machine Learning, Deep Learning, MLOps
+Developing robust Python solutions for data-driven products
+Driving data analytics pipelines and insights generation
+Delivering collaborative projects in real-world environments
 
 ## 📊 Most Used Languages
 
