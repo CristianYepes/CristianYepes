@@ -9,7 +9,7 @@
 Software & AI Developer with hands-on experience in intelligent systems, scalable architectures, and automation.
 Currently enhancing advanced AI capabilities through intensive projects at 42 Madrid and specialized AI engineering at Factoría F5.
 📫 Contact: yepes.tech@gmail.com
-<p align="center"> <a href="https://profile.intra.42.fr/users/cyepes"> <img alt="42intra" src="https://img.shields.io/badge/42%20Profile-lvl%203.36-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" /> </a> </p>
+<p align="center"> <a href="https://profile.intra.42.fr/users/cyepes"> <img alt="42intra" src="https://img.shields.io/badge/%20Profile-lvl%204.18-000000?style=for-the-badge&logo=42&labelColor=000000&Color=000000&logoWidth=25" width="220" height="50" /> </a> </p>
 
 
 ## Focus Areas
