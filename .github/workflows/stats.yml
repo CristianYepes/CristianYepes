@@ -1,4 +1,4 @@
-name: Generate profile stats
+name: Generate snake and stats
 
 on:
   schedule:
@@ -87,6 +87,13 @@ jobs:
           print(commits, n_repos, top)
 
           PY
+
+      - uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake.svg
+            dist/snake-dark.svg?palette=github-dark
 
       - uses: crazy-max/ghaction-github-pages@v4
         with:
