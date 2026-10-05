@@ -9,7 +9,7 @@
 
 <br/>
 
-<img src="https://streak-stats.demolab.com?user=CristianYepes&theme=github-dark-blue&hide_border=true&hide_current_streak=true&hide_longest_streak=true" alt="Total contributions"/>
+<img src="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/stats.svg" alt="Total contributions, public commits and most used languages" width="420"/>
 
 <p align="center">
   <a href="https://www.linkedin.com/in/cristian-yepes"><img src="https://img.shields.io/badge/LinkedIn-Cristian%20Yepes-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
