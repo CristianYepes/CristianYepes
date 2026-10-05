@@ -19,10 +19,12 @@ jobs:
         run: |
           python3 - <<'PY'
           import json, os, urllib.request
+          from datetime import datetime, timezone
 
           USER = os.environ.get("GH_USER", "CristianYepes")
           TOKEN = os.environ.get("GITHUB_TOKEN", "")
           OUT = os.environ.get("OUT", "dist/stats.svg")
+
 
           def api(path):
               req = urllib.request.Request("https://api.github.com" + path, headers={"Accept": "application/vnd.github+json"})
@@ -36,7 +38,43 @@ jobs:
                   print("skip", path, e)
                   return None
 
-          repos = [r for r in api(f"/users/{USER}/repos?per_page=100&type=owner") if not r["fork"] and not r["private"]]
+
+          def graphql(query, variables):
+              req = urllib.request.Request(
+                  "https://api.github.com/graphql",
+                  data=json.dumps({"query": query, "variables": variables}).encode(),
+                  headers={"Authorization": "Bearer " + TOKEN, "Content-Type": "application/json"},
+              )
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      d = json.loads(r.read())
+                      if d.get("errors"):
+                          print("graphql errors", d["errors"])
+                      return d.get("data")
+              except Exception as e:
+                  print("skip graphql", e)
+                  return None
+
+
+          def total_contributions():
+              d = graphql("query($u:String!){user(login:$u){contributionsCollection{contributionYears}}}", {"u": USER})
+              if not d or not d.get("user"):
+                  return None
+              years = sorted(d["user"]["contributionsCollection"]["contributionYears"])
+              if not years:
+                  return 0
+              now = datetime.now(timezone.utc)
+              fields = []
+              for y in years:
+                  end = now.strftime("%Y-%m-%dT%H:%M:%SZ") if y == now.year else f"{y}-12-31T23:59:59Z"
+                  fields.append(f'y{y}: contributionsCollection(from: "{y}-01-01T00:00:00Z", to: "{end}") {{ contributionCalendar {{ totalContributions }} }}')
+              d = graphql("query($u:String!){user(login:$u){" + " ".join(fields) + "}}", {"u": USER})
+              if not d or not d.get("user"):
+                  return None
+              return sum(v["contributionCalendar"]["totalContributions"] for v in d["user"].values())
+
+
+          repos = [r for r in (api(f"/users/{USER}/repos?per_page=100&type=owner") or []) if not r["fork"] and not r["private"]]
           commits, langs = 0, {}
           for r in repos:
               for c in api(f"/repos/{USER}/{r['name']}/contributors?per_page=100") or []:
@@ -45,6 +83,7 @@ jobs:
               for k, v in (api(f"/repos/{USER}/{r['name']}/languages") or {}).items():
                   langs[k] = langs.get(k, 0) + v
           n_repos = len(repos)
+          contribs = total_contributions()
 
           COLORS = {"C": "#a8b1bd", "Python": "#3572A5", "JavaScript": "#f1e05a", "TypeScript": "#3178c6",
                     "Jupyter Notebook": "#DA5B0B", "CSS": "#8e6cc9", "HTML": "#e34c26", "Makefile": "#427819",
@@ -52,39 +91,43 @@ jobs:
           total = sum(langs.values()) or 1
           top = sorted(langs.items(), key=lambda kv: -kv[1])[:6]
 
-          W, PAD = 520, 24
+          W, PAD, COL2 = 420, 24, 224
+          BAR_Y = 198
           bar_w = W - 2 * PAD
           parts, x = [], PAD
           for name, b in top:
               w = bar_w * b / (sum(v for _, v in top) or 1)
-              parts.append(f'<rect x="{x:.1f}" y="118" width="{w:.1f}" height="8" fill="{COLORS.get(name, "#8b949e")}"/>')
+              parts.append(f'<rect x="{x:.1f}" y="{BAR_Y}" width="{w:.1f}" height="8" fill="{COLORS.get(name, "#8b949e")}"/>')
               x += w
           legend = []
           for i, (name, b) in enumerate(top):
-              lx, ly = PAD + (i % 2) * 236, 152 + (i // 2) * 24
+              lx, ly = PAD + (i % 2) * (COL2 - PAD), 234 + (i // 2) * 26
               legend.append(f'<circle cx="{lx + 5}" cy="{ly - 4}" r="5" fill="{COLORS.get(name, "#8b949e")}"/>'
                             f'<text x="{lx + 16}" y="{ly}" class="l">{name} <tspan class="m">{100 * b / total:.1f}%</tspan></text>')
-          H = 152 + ((len(top) + 1) // 2) * 24 + 8
+          H = 234 + ((len(top) + 1) // 2 - 1) * 26 + 24
 
-          def stat(x, value, label):
-              return f'<text x="{x}" y="58" class="n">{value}</text><text x="{x}" y="80" class="m">{label}</text>'
+
+          def stat(x, y, value, label):
+              return f'<text x="{x}" y="{y}" class="n">{value}</text><text x="{x}" y="{y + 22}" class="m">{label}</text>'
+
 
           svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">
           <style>
           text{{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;fill:#e6edf3}}
-          .n{{font-size:28px;font-weight:600}} .l{{font-size:14px}} .m{{font-size:13px;fill:#8b949e}}
+          .n{{font-size:32px;font-weight:600}} .l{{font-size:14px}} .m{{font-size:14px;fill:#8b949e}}
           </style>
           <rect width="100%" height="100%" rx="12" fill="#0d1117" stroke="#30363d"/>
-          {stat(PAD, commits, "commits")}{stat(PAD + 160, n_repos, "public repos")}{stat(PAD + 320, len(langs), "languages")}
-          <text x="{PAD}" y="106" class="m">Most used languages</text>
-          <clipPath id="r"><rect x="{PAD}" y="118" width="{bar_w}" height="8" rx="4"/></clipPath>
+          {stat(PAD, 58, f"{contribs:,}" if contribs is not None else "–", "total contributions")}{stat(COL2, 58, f"{commits:,}", "public commits")}
+          {stat(PAD, 124, n_repos, "public repos")}{stat(COL2, 124, len(langs), "languages")}
+          <text x="{PAD}" y="184" class="m">Most used languages</text>
+          <clipPath id="r"><rect x="{PAD}" y="{BAR_Y}" width="{bar_w}" height="8" rx="4"/></clipPath>
           <g clip-path="url(#r)">{"".join(parts)}</g>
           {"".join(legend)}
           </svg>
           '''
           os.makedirs(os.path.dirname(OUT) or ".", exist_ok=True)
           open(OUT, "w").write(svg)
-          print(commits, n_repos, top)
+          print(contribs, commits, n_repos, top)
 
           PY
 
