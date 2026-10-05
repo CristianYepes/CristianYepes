@@ -12,7 +12,10 @@
 
 <br/>
 
-<img src="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/stats.svg" alt="Total contributions, public commits and most used languages" width="420"/>
+<picture>
+  <source media="(min-width: 560px)" srcset="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/stats-wide.svg">
+  <img src="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/stats.svg" alt="Total contributions, public commits and most used languages" width="100%">
+</picture>
 
 <p align="center">
   <a href="https://www.linkedin.com/in/cristian-yepes"><img src="https://img.shields.io/badge/LinkedIn-Cristian%20Yepes-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
