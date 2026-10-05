@@ -23,7 +23,7 @@ jobs:
 
           USER = os.environ.get("GH_USER", "CristianYepes")
           TOKEN = os.environ.get("GITHUB_TOKEN", "")
-          OUT = os.environ.get("OUT", "dist/stats.svg")
+          OUT_DIR = os.environ.get("OUT_DIR", "dist")
 
 
           def api(path):
@@ -90,43 +90,69 @@ jobs:
                     "Rust": "#dea584", "C++": "#f34b7d", "Shell": "#89e051", "Swift": "#F05138", "Go": "#00ADD8"}
           total = sum(langs.values()) or 1
           top = sorted(langs.items(), key=lambda kv: -kv[1])[:6]
+          top_sum = sum(v for _, v in top) or 1
+          contribs_txt = f"{contribs:,}" if contribs is not None else "–"
+          STATS = [(contribs_txt, "total contributions"), (f"{commits:,}", "public commits"),
+                   (n_repos, "public repos"), (len(langs), "languages")]
 
-          W, PAD, COL2 = 420, 24, 224
-          BAR_Y = 198
-          bar_w = W - 2 * PAD
-          parts, x = [], PAD
-          for name, b in top:
-              w = bar_w * b / (sum(v for _, v in top) or 1)
-              parts.append(f'<rect x="{x:.1f}" y="{BAR_Y}" width="{w:.1f}" height="8" fill="{COLORS.get(name, "#8b949e")}"/>')
-              x += w
-          legend = []
-          for i, (name, b) in enumerate(top):
-              lx, ly = PAD + (i % 2) * (COL2 - PAD), 234 + (i // 2) * 26
-              legend.append(f'<circle cx="{lx + 5}" cy="{ly - 4}" r="5" fill="{COLORS.get(name, "#8b949e")}"/>'
-                            f'<text x="{lx + 16}" y="{ly}" class="l">{name} <tspan class="m">{100 * b / total:.1f}%</tspan></text>')
-          H = 234 + ((len(top) + 1) // 2 - 1) * 26 + 24
+
+          def color(name):
+              return COLORS.get(name, "#8b949e")
 
 
           def stat(x, y, value, label):
-              return f'<text x="{x}" y="{y}" class="n">{value}</text><text x="{x}" y="{y + 22}" class="m">{label}</text>'
+              return f'<text x="{x}" y="{y}" class="n">{value}</text><text x="{x}" y="{y + 24}" class="m">{label}</text>'
 
 
-          svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">
+          def lang_bar(x0, y, w, h):
+              parts, x = [], x0
+              for name, b in top:
+                  bw = w * b / top_sum
+                  parts.append(f'<rect x="{x:.1f}" y="{y}" width="{bw:.1f}" height="{h}" fill="{color(name)}"/>')
+                  x += bw
+              return (f'<clipPath id="r"><rect x="{x0}" y="{y}" width="{w}" height="{h}" rx="{h // 2}"/></clipPath>'
+                      f'<g clip-path="url(#r)">{"".join(parts)}</g>')
+
+
+          def legend_item(lx, ly, name, b):
+              return (f'<circle cx="{lx + 5}" cy="{ly - 4}" r="5" fill="{color(name)}"/>'
+                      f'<text x="{lx + 16}" y="{ly}" class="l">{name} <tspan class="m">{100 * b / total:.1f}%</tspan></text>')
+
+
+          def wrap(W, H, num_px, text_px, body):
+              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">
           <style>
           text{{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;fill:#e6edf3}}
-          .n{{font-size:32px;font-weight:600}} .l{{font-size:14px}} .m{{font-size:14px;fill:#8b949e}}
+          .n{{font-size:{num_px}px;font-weight:600}} .l{{font-size:{text_px}px}} .m{{font-size:{text_px}px;fill:#8b949e}}
           </style>
           <rect width="100%" height="100%" rx="12" fill="#0d1117" stroke="#30363d"/>
-          {stat(PAD, 58, f"{contribs:,}" if contribs is not None else "–", "total contributions")}{stat(COL2, 58, f"{commits:,}", "public commits")}
-          {stat(PAD, 124, n_repos, "public repos")}{stat(COL2, 124, len(langs), "languages")}
-          <text x="{PAD}" y="184" class="m">Most used languages</text>
-          <clipPath id="r"><rect x="{PAD}" y="{BAR_Y}" width="{bar_w}" height="8" rx="4"/></clipPath>
-          <g clip-path="url(#r)">{"".join(parts)}</g>
-          {"".join(legend)}
+          {body}
           </svg>
           '''
-          os.makedirs(os.path.dirname(OUT) or ".", exist_ok=True)
-          open(OUT, "w").write(svg)
+
+
+          # Narrow card (phones): 2x2 numbers, one legend column. Designed to be shown at roughly 1:1.
+          W, PAD = 320, 24
+          body = (stat(PAD, 58, *STATS[0]) + stat(172, 58, *STATS[1]) + "\n" + stat(PAD, 126, *STATS[2]) + stat(172, 126, *STATS[3]) + "\n"
+                  + f'<text x="{PAD}" y="190" class="m">Most used languages</text>\n'
+                  + lang_bar(PAD, 204, W - 2 * PAD, 8) + "\n"
+                  + "".join(legend_item(PAD, 240 + i * 26, n, b) for i, (n, b) in enumerate(top)))
+          H = 240 + (len(top) - 1) * 26 + 24
+          narrow = wrap(W, H, 32, 14, body)
+
+          # Wide card (desktop / tablets): four numbers in one row, three legend columns.
+          W, PAD = 700, 28
+          col = (W - 2 * PAD) / 4
+          body = ("".join(stat(round(PAD + i * col), 74, v, l) for i, (v, l) in enumerate(STATS)) + "\n"
+                  + f'<text x="{PAD}" y="150" class="m">Most used languages</text>\n'
+                  + lang_bar(PAD, 164, W - 2 * PAD, 10) + "\n"
+                  + "".join(legend_item(PAD + (i % 3) * 216, 212 + (i // 3) * 28, n, b) for i, (n, b) in enumerate(top)))
+          H = 212 + ((len(top) - 1) // 3) * 28 + 30
+          wide = wrap(W, H, 38, 15, body)
+
+          os.makedirs(OUT_DIR, exist_ok=True)
+          open(os.path.join(OUT_DIR, "stats.svg"), "w").write(narrow)
+          open(os.path.join(OUT_DIR, "stats-wide.svg"), "w").write(wide)
           print(contribs, commits, n_repos, top)
 
           PY
