@@ -1,4 +1,7 @@
-<img src="./chat.svg" alt="Hi, I'm Cristian — Industrial Data & AI Engineer at Renault Group. Open to collaborating on industrial AI and data projects." width="400"/>
+<picture>
+  <source media="(min-width: 480px)" srcset="https://github.com/CristianYepes/CristianYepes/raw/main/chat-wide.svg">
+  <img src="./chat.svg" alt="Hi, I'm Cristian — Industrial Data & AI Engineer at Renault Group. Open to collaborating on industrial AI and data projects." width="100%">
+</picture>
 
 <br/>
 
