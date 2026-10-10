@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="394" viewBox="0 0 320 394">
+<style>
+text{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;fill:#e6edf3}
+.n{font-size:32px;font-weight:600} .l{font-size:14px} .m{font-size:14px;fill:#8b949e}
+</style>
+<rect width="100%" height="100%" rx="12" fill="#0d1117" stroke="#30363d"/>
+<text x="24" y="58" class="n">281</text><text x="24" y="82" class="m">total contributions</text><text x="172" y="58" class="n">38</text><text x="172" y="82" class="m">public commits</text>
+<text x="24" y="126" class="n">11</text><text x="24" y="150" class="m">public repos</text><text x="172" y="126" class="n">8</text><text x="172" y="150" class="m">languages</text>
+<text x="24" y="190" class="m">Most used languages</text>
+<clipPath id="r"><rect x="24" y="204" width="272" height="8" rx="4"/></clipPath><g clip-path="url(#r)"><rect x="24.0" y="204" width="101.5" height="8" fill="#a8b1bd"/><rect x="125.5" y="204" width="80.9" height="8" fill="#3572A5"/><rect x="206.4" y="204" width="45.9" height="8" fill="#f1e05a"/><rect x="252.3" y="204" width="33.7" height="8" fill="#3178c6"/><rect x="286.0" y="204" width="6.4" height="8" fill="#8e6cc9"/><rect x="292.4" y="204" width="3.6" height="8" fill="#427819"/></g>
+<circle cx="29" cy="236" r="5" fill="#a8b1bd"/><text x="40" y="240" class="l">C <tspan class="m">37.0%</tspan></text><circle cx="29" cy="262" r="5" fill="#3572A5"/><text x="40" y="266" class="l">Python <tspan class="m">29.5%</tspan></text><circle cx="29" cy="288" r="5" fill="#f1e05a"/><text x="40" y="292" class="l">JavaScript <tspan class="m">16.7%</tspan></text><circle cx="29" cy="314" r="5" fill="#3178c6"/><text x="40" y="318" class="l">TypeScript <tspan class="m">12.3%</tspan></text><circle cx="29" cy="340" r="5" fill="#8e6cc9"/><text x="40" y="344" class="l">CSS <tspan class="m">2.3%</tspan></text><circle cx="29" cy="366" r="5" fill="#427819"/><text x="40" y="370" class="l">Makefile <tspan class="m">1.3%</tspan></text>
+</svg>
