@@ -1,0 +1,172 @@
+name: Generate snake and stats
+
+on:
+  schedule:
+    - cron: "0 3 * * *" # every day at 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build stats card
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.repository_owner }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+
+          USER = os.environ.get("GH_USER", "CristianYepes")
+          TOKEN = os.environ.get("GITHUB_TOKEN", "")
+          OUT_DIR = os.environ.get("OUT_DIR", "dist")
+
+
+          def api(path):
+              req = urllib.request.Request("https://api.github.com" + path, headers={"Accept": "application/vnd.github+json"})
+              if TOKEN:
+                  req.add_header("Authorization", "Bearer " + TOKEN)
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      body = r.read()
+                      return json.loads(body) if r.status == 200 and body else None
+              except Exception as e:
+                  print("skip", path, e)
+                  return None
+
+
+          def graphql(query, variables):
+              req = urllib.request.Request(
+                  "https://api.github.com/graphql",
+                  data=json.dumps({"query": query, "variables": variables}).encode(),
+                  headers={"Authorization": "Bearer " + TOKEN, "Content-Type": "application/json"},
+              )
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      d = json.loads(r.read())
+                      if d.get("errors"):
+                          print("graphql errors", d["errors"])
+                      return d.get("data")
+              except Exception as e:
+                  print("skip graphql", e)
+                  return None
+
+
+          def total_contributions():
+              d = graphql("query($u:String!){user(login:$u){contributionsCollection{contributionYears}}}", {"u": USER})
+              if not d or not d.get("user"):
+                  return None
+              years = sorted(d["user"]["contributionsCollection"]["contributionYears"])
+              if not years:
+                  return 0
+              now = datetime.now(timezone.utc)
+              fields = []
+              for y in years:
+                  end = now.strftime("%Y-%m-%dT%H:%M:%SZ") if y == now.year else f"{y}-12-31T23:59:59Z"
+                  fields.append(f'y{y}: contributionsCollection(from: "{y}-01-01T00:00:00Z", to: "{end}") {{ contributionCalendar {{ totalContributions }} }}')
+              d = graphql("query($u:String!){user(login:$u){" + " ".join(fields) + "}}", {"u": USER})
+              if not d or not d.get("user"):
+                  return None
+              return sum(v["contributionCalendar"]["totalContributions"] for v in d["user"].values())
+
+
+          repos = [r for r in (api(f"/users/{USER}/repos?per_page=100&type=owner") or []) if not r["fork"] and not r["private"]]
+          commits, langs = 0, {}
+          for r in repos:
+              for c in api(f"/repos/{USER}/{r['name']}/contributors?per_page=100") or []:
+                  if c.get("login", "").lower() == USER.lower():
+                      commits += c["contributions"]
+              for k, v in (api(f"/repos/{USER}/{r['name']}/languages") or {}).items():
+                  langs[k] = langs.get(k, 0) + v
+          n_repos = len(repos)
+          contribs = total_contributions()
+
+          COLORS = {"C": "#a8b1bd", "Python": "#3572A5", "JavaScript": "#f1e05a", "TypeScript": "#3178c6",
+                    "Jupyter Notebook": "#DA5B0B", "CSS": "#8e6cc9", "HTML": "#e34c26", "Makefile": "#427819",
+                    "Rust": "#dea584", "C++": "#f34b7d", "Shell": "#89e051", "Swift": "#F05138", "Go": "#00ADD8"}
+          total = sum(langs.values()) or 1
+          top = sorted(langs.items(), key=lambda kv: -kv[1])[:6]
+          top_sum = sum(v for _, v in top) or 1
+          contribs_txt = f"{contribs:,}" if contribs is not None else "–"
+          STATS = [(contribs_txt, "total contributions"), (f"{commits:,}", "public commits"),
+                   (n_repos, "public repos"), (len(langs), "languages")]
+
+
+          def color(name):
+              return COLORS.get(name, "#8b949e")
+
+
+          def stat(x, y, value, label):
+              return f'<text x="{x}" y="{y}" class="n">{value}</text><text x="{x}" y="{y + 24}" class="m">{label}</text>'
+
+
+          def lang_bar(x0, y, w, h):
+              parts, x = [], x0
+              for name, b in top:
+                  bw = w * b / top_sum
+                  parts.append(f'<rect x="{x:.1f}" y="{y}" width="{bw:.1f}" height="{h}" fill="{color(name)}"/>')
+                  x += bw
+              return (f'<clipPath id="r"><rect x="{x0}" y="{y}" width="{w}" height="{h}" rx="{h // 2}"/></clipPath>'
+                      f'<g clip-path="url(#r)">{"".join(parts)}</g>')
+
+
+          def legend_item(lx, ly, name, b):
+              return (f'<circle cx="{lx + 5}" cy="{ly - 4}" r="5" fill="{color(name)}"/>'
+                      f'<text x="{lx + 16}" y="{ly}" class="l">{name} <tspan class="m">{100 * b / total:.1f}%</tspan></text>')
+
+
+          def wrap(W, H, num_px, text_px, body):
+              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">
+          <style>
+          text{{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;fill:#e6edf3}}
+          .n{{font-size:{num_px}px;font-weight:600}} .l{{font-size:{text_px}px}} .m{{font-size:{text_px}px;fill:#8b949e}}
+          </style>
+          <rect width="100%" height="100%" rx="12" fill="#0d1117" stroke="#30363d"/>
+          {body}
+          </svg>
+          '''
+
+
+          # Narrow card (phones): 2x2 numbers, one legend column. Designed to be shown at roughly 1:1.
+          W, PAD = 320, 24
+          body = (stat(PAD, 58, *STATS[0]) + stat(172, 58, *STATS[1]) + "\n" + stat(PAD, 126, *STATS[2]) + stat(172, 126, *STATS[3]) + "\n"
+                  + f'<text x="{PAD}" y="190" class="m">Most used languages</text>\n'
+                  + lang_bar(PAD, 204, W - 2 * PAD, 8) + "\n"
+                  + "".join(legend_item(PAD, 240 + i * 26, n, b) for i, (n, b) in enumerate(top)))
+          H = 240 + (len(top) - 1) * 26 + 24
+          narrow = wrap(W, H, 32, 14, body)
+
+          # Wide card (desktop / tablets): four numbers in one row, three legend columns.
+          W, PAD = 700, 28
+          col = (W - 2 * PAD) / 4
+          body = ("".join(stat(round(PAD + i * col), 74, v, l) for i, (v, l) in enumerate(STATS)) + "\n"
+                  + f'<text x="{PAD}" y="150" class="m">Most used languages</text>\n'
+                  + lang_bar(PAD, 164, W - 2 * PAD, 10) + "\n"
+                  + "".join(legend_item(PAD + (i % 3) * 216, 212 + (i // 3) * 28, n, b) for i, (n, b) in enumerate(top)))
+          H = 212 + ((len(top) - 1) // 3) * 28 + 30
+          wide = wrap(W, H, 38, 15, body)
+
+          os.makedirs(OUT_DIR, exist_ok=True)
+          open(os.path.join(OUT_DIR, "stats.svg"), "w").write(narrow)
+          open(os.path.join(OUT_DIR, "stats-wide.svg"), "w").write(wide)
+          print(contribs, commits, n_repos, top)
+
+          PY
+
+      - uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake.svg
+            dist/snake-dark.svg?palette=github-dark
+
+      - uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
