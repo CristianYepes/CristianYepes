@@ -1,16 +1,22 @@
-## Hi there 👋
+<picture>
+  <source media="(min-width: 480px)" srcset="https://github.com/CristianYepes/CristianYepes/raw/main/chat-wide.svg">
+  <img src="./chat.svg" alt="Hi, I'm Cristian — Industrial Data & AI Engineer at Outlier Group. Open to collaborating on industrial AI and data projects." width="100%">
+</picture>
 
-<!--
-**CristianYepes/CristianYepes** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+<br/>
 
-Here are some ideas to get you started:
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/snake-dark.svg">
+  <img alt="Contribution snake" src="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/snake.svg" width="100%">
+</picture>
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+<br/>
+
+<picture>
+  <source media="(min-width: 560px)" srcset="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/stats-wide.svg">
+  <img src="https://raw.githubusercontent.com/CristianYepes/CristianYepes/output/stats.svg" alt="Total contributions, public commits and most used languages" width="100%">
+</picture>
+
+<p align="center">
+  <a href="https://www.linkedin.com/in/cristian-yepes"><img src="https://img.shields.io/badge/LinkedIn-Cristian%20Yepes-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
+</p>
